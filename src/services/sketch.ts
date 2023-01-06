@@ -27,9 +27,25 @@
     Can this be in a hook?
 
 */
+const jQueryURL = '/scripts/jquery-2.2.4.min.js';
+const polyfillURL = '/scripts/polyfill.min.js';
+const rampURL = '/scripts/rv-main.js';
 
-// Step 1: Asynchronously attach script to DOM
+const getScript = (url: string) => document.querySelector(`script[src="${url}"]`);
+
+const isScriptLoaded = (url: string) => {
+  const script = getScript(url);
+  if (!script) {
+    return false;
+  }
+  else {
+    return script;
+  }
+};
+
+// Asynchronously attach script to DOM
 const loadScript = async (url: string) => {
+  if (isScriptLoaded(url)) return;
   return new Promise((resolve, reject) => {
     // create script element
     const script = document.createElement('script');
@@ -45,10 +61,22 @@ const loadScript = async (url: string) => {
   });
 };
 
-// Step 2: Write a function that checks if a script has been loaded
-const getScript = (url: string) => document.querySelector(`script[src="${url}"]`);
+// initializes RAMP and dependencies
+const init = async () => {
+  await loadScript(jQueryURL);
+  await loadScript(polyfillURL);
+  await loadScript(rampURL);
+};
+
+const getRampInstance = () => {
+  if (isScriptLoaded(rampURL)) return window?.RAMP;
+  console.log('RAMP not initialized, remember to run `init` first');
+};
+
+const isRampReady = () => isScriptLoaded(jQueryURL) && isScriptLoaded(polyfillURL) && isScriptLoaded(rampURL);
 
 export {
-  loadScript,
-  getScript
+  init,
+  getRampInstance,
+  isRampReady,
 };
