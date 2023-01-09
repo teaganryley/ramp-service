@@ -7,22 +7,31 @@ import {
 
 const useRAMP = () => {
   const [isLoading, setIsLoading] = useState(false);
+  const [mapInstance, setMapInstance] = useState(null);
 
   const initializeRAMP = async () => {
     setIsLoading(true);
-    await init(); // try catch with window here?
+    try {
+      await init();
+      // once RAMP is initialized, create new map
+      const RAMP = getRampInstance();
+      const map = new RAMP.Map(); // need anchor, config
+      setMapInstance(map);
+    } catch(e) {
+      console.error('Error initalizing RAMP: ', e);
+    }
     setIsLoading(false);
   };
 
   useEffect(() => {
     if (!isLoading) {
-      initializeRAMP();
+      initializeRAMP(); // await here?
     }
   }, [isLoading]);
 
   return {
     isLoading,
-    RAMP: getRampInstance,
+    map: mapInstance,
   };
 };
 
