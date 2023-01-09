@@ -10,7 +10,7 @@ const useRAMP = () => {
 
   const initializeRAMP = async () => {
     setIsLoading(true);
-    await init();
+    await init(); // try catch with window here?
     setIsLoading(false);
   };
 
@@ -18,7 +18,7 @@ const useRAMP = () => {
     if (!isLoading) {
       initializeRAMP();
     }
-  }, []);
+  }, [isLoading]);
 
   return {
     isLoading,
