@@ -1,32 +1,4 @@
-/* 
-  Problem: 
-    We are writing a React app that uses a mapping library called RAMP.
-    RAMP predates module support. We cannot import it.
-    RAMP must be loaded by attaching it to the HTML document as a <script>
-    RAMP has the following dependencies, at minimum:
-      - jquery (script)
-      - a polyfill (script)
-      - a stylesheet (css doc in the head)
-      - itself (rv-main.js)
-
-
-  Requirements:
-    We need a script which does the following:
-      - loads RAMP (attaches RAMP script and dependencies to document)
-      - tells us if RAMP is loaded
-      - refreshes RAMP
-      - destroys RAMP
-      - retrieves an instance of RAMP for us to interact with 
-        NOTE: This might be the responsibility of the hook itself
-    
-    This needs to be asynchronous, so we can reliably use RAMP without surfacing errors.
-
-
-  Future:
-    Additionally, we will also need to write code which handles the configuration of RAMP.
-    Can this be in a hook?
-
-*/
+const styleURL = '/scripts/rv-styles.css';
 const jQueryURL = '/scripts/jquery-2.2.4.min.js';
 const polyfillURL = '/scripts/polyfill.min.js';
 const rampURL = '/scripts/rv-main.js';
@@ -41,6 +13,15 @@ const isScriptLoaded = (url: string) => {
   else {
     return script;
   }
+};
+
+const loadStyles = (url: string) => {
+  const styleSheet = document.createElement('link');
+  
+  styleSheet.rel = 'stylesheet';
+  styleSheet.href = url;
+
+  document.head.appendChild(styleSheet);
 };
 
 // Asynchronously attach script to DOM
@@ -63,9 +44,19 @@ const loadScript = async (url: string) => {
 
 // initializes RAMP and dependencies
 const init = async () => {
-  await loadScript(jQueryURL);
-  await loadScript(polyfillURL);
-  await loadScript(rampURL);
+  console.log('init RAMP');
+  try {
+    // loadStyles(styleURL);
+    // console.log('styles loaded');
+    await loadScript(jQueryURL);
+    console.log('jquery loaded');
+    await loadScript(polyfillURL);
+    console.log('polyfill loaded');
+    await loadScript(rampURL);
+    console.log('ramp loaded');
+  } catch(error) {
+    console.error(`There was an error loading RAMP: ${error}`);
+  }
 };
 
 const getRampInstance = () => {
