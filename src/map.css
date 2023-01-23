@@ -1,0 +1,11 @@
+.custom-margin {
+  background-color: #ffffff;
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+}
+
+.map {
+  height: 750px;
+  padding: 15px 15px;
+}

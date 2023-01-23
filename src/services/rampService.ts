@@ -5,17 +5,9 @@ const rampURL = '/scripts/rv-main.js';
 
 const getScript = (url: string) => document.querySelector(`script[src="${url}"]`);
 
-const isScriptLoaded = (url: string) => {
-  const script = getScript(url);
-  if (!script) {
-    return false;
-  }
-  else {
-    return script;
-  }
-};
-
-const loadStyles = (url: string) => {
+const loadStyle = (url: string) => {
+  if (document.querySelector(`link[href="${url}"]`)) return;
+  
   const styleSheet = document.createElement('link');
   
   styleSheet.rel = 'stylesheet';
@@ -24,9 +16,16 @@ const loadStyles = (url: string) => {
   document.head.appendChild(styleSheet);
 };
 
+const removeStyle = (url: string) => {
+  const styleSheet = document.querySelector(`link[href="${url}"]`);
+
+  if (!styleSheet) return;
+  styleSheet.remove();
+};
+
 // Asynchronously attach script to DOM
 const loadScript = async (url: string) => {
-  if (isScriptLoaded(url)) return;
+  if (getScript(url)) return;
   return new Promise((resolve, reject) => {
     // create script element
     const script = document.createElement('script');
@@ -38,36 +37,43 @@ const loadScript = async (url: string) => {
     script.addEventListener("load", () => resolve(script)); // perhaps should resolve to true
     script.addEventListener("error", () => reject(new Error(`There was an error loading script ${url}`)));
 
-    document.head.append(script);
+    document.body.append(script);
   });
+};
+
+const removeScript = (url: string) => {
+  const script = getScript(url);
+  
+  if (!getScript(url)) return;
+  script?.remove();
 };
 
 // initializes RAMP and dependencies
 const init = async () => {
   console.log('init RAMP');
   try {
-    // loadStyles(styleURL);
+    loadStyle(styleURL);
     // console.log('styles loaded');
     await loadScript(jQueryURL);
-    console.log('jquery loaded');
+    // console.log('jquery loaded');
     await loadScript(polyfillURL);
-    console.log('polyfill loaded');
+    // console.log('polyfill loaded');
     await loadScript(rampURL);
-    console.log('ramp loaded');
+    // console.log('ramp loaded');
   } catch(error) {
     console.error(`There was an error loading RAMP: ${error}`);
   }
 };
 
-const getRampInstance = () => {
-  if (isScriptLoaded(rampURL)) return window?.RAMP;
-  console.log('RAMP not initialized, remember to run `init` first');
+const end = () => {
+  console.log('terminating RAMP');
+  removeStyle(styleURL);
+  removeScript(jQueryURL);
+  removeScript(polyfillURL);
+  removeScript(rampURL);
 };
-
-const isRampReady = () => isScriptLoaded(jQueryURL) && isScriptLoaded(polyfillURL) && isScriptLoaded(rampURL);
 
 export {
   init,
-  getRampInstance,
-  isRampReady,
+  end
 };

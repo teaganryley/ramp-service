@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import {
   init,
   // isRampReady,
-  getRampInstance 
+  // getRampInstance 
 } from "../services/rampService";
 
 const useRAMP = (anchor: string = 'rv-map', config?: string | JSON) => {
@@ -15,9 +15,9 @@ const useRAMP = (anchor: string = 'rv-map', config?: string | JSON) => {
     await init();
     
     // once RAMP is initialized, create new map
-    const RAMP = getRampInstance();
+    /* const RAMP = getRampInstance();
     const map = new RAMP.Map(document.getElementById(anchor)); // need anchor, config
-    setMapInstance(map);
+    setMapInstance(map); */
     
     setIsLoading(false);
   };
