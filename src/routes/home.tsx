@@ -8,12 +8,11 @@ function Home() {
 
   useEffect(() => {
     init();
+    return () => end();
   }, []);
 
-  const handleRemove = () => {
-    end();
-  };
-
+  const handleRemove = () => end();
+ 
   return (
     <div>
       <h1>RAMP service test</h1>

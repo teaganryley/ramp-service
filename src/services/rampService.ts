@@ -65,8 +65,17 @@ const init = async () => {
   }
 };
 
+// RAMP automatically adds ~30 js.arcgis.com scripts-- we need to remove them
+const removeGisDeps = () => {
+  const nodeList = document.querySelectorAll('script[src*="js.arcgis.com"]');
+  
+  // we use the built-in forEach on NodeList
+  nodeList.forEach(element => element.remove());
+};
+
 const end = () => {
   console.log('terminating RAMP');
+  removeGisDeps();
   removeStyle(styleURL);
   removeScript(jQueryURL);
   removeScript(polyfillURL);
